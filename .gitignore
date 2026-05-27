@@ -1,0 +1,57 @@
+# ── OS / IDE noise ────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# ── AI / Claude Code ──────────────────────────────────────────────────────────
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/agent-memory-local/
+## Optional: keep auto-managed agent memory entirely local instead of shared
+# .claude/agent-memory/
+## Optional: keep human-curated shared logs local
+# .claude/memory/
+## Superpowers (Obra/community add-on)
+.superpowers/
+docs/superpowers/
+
+# ── Secrets ───────────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# ── Temp / logs ───────────────────────────────────────────────────────────────
+*.log
+*.tmp
+*.bak
+*.old
+*.orig
+.cache/
+.tmp/
+.temp/
+
+# dependencies
+node_modules/
+
+# Package manager: pnpm is canonical. Reject npm/yarn lockfiles.
+package-lock.json
+yarn.lock
+
+# Generated rasters — produced by scripts/build-rasters.mjs from SVG sources.
+# Not committed: SVG = single source of truth. Build locally before deploying
+# static targets (run `pnpm install --frozen-lockfile && pnpm build:rasters`). See CLAUDE.md §3.9.
+01-logos/**/*.png
+01-logos/**/*.jpg
+01-logos/**/*.webp
+06-favicon-app/*.png
+06-favicon-app/*.ico
+06-favicon-app/*.jpg
+06-favicon-app/*.webp
+07-social/**/*.png
+07-social/**/*.jpg
+07-social/**/*.webp
