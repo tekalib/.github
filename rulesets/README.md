@@ -9,16 +9,19 @@ gh auth refresh -h github.com -s admin:org   # once
 ./apply.sh                                   # or ./apply.sh <other-org>
 ```
 
-**Requires GitHub Team.** On GitHub Free, organisation rulesets return
-`403 Upgrade to GitHub Team` and neither rulesets nor classic branch protection apply to
-private repositories. Until the upgrade, only `.github` (public) can be protected, and only
-through repository-level rulesets.
+**Requires GitHub Team.** On Free, these endpoints return `403 Upgrade to GitHub Team`
+and neither rulesets nor classic branch protection apply to private repositories at all,
+so a downgrade silently unprotects every repository but `.github`.
 
 | Ruleset                     | Targets                                | Enforces                                            | Admin bypass |
 | --------------------------- | -------------------------------------- | --------------------------------------------------- | ------------ |
 | Conventional Branch Naming  | all repos, all branches                | branch creation limited to the allowed prefixes      | no           |
 | Trunk Protection            | all repos, default branch + `develop`  | no deletion, no force-push                           | no           |
-| Trunk Merge Flow            | all repos, default branch + `develop`  | pull request, squash only, threads resolved          | yes          |
+| Trunk Merge Flow            | all repos, default branch + `develop`  | pull request, squash only, threads resolved, signed  | yes          |
+
+Required CI checks are deliberately absent: they differ per repository and each project
+already gates its own merges in `ci.yml`. This repository is public, so nothing here may
+name a private repository anyway.
 
 ## Why it is shaped this way
 
@@ -39,5 +42,9 @@ through repository-level rulesets.
   hand, discipline is the only guard there.
 - **Zero required approvals.** A solo maintainer cannot approve their own pull request.
   Raise the count on the day a second maintainer joins.
-- **Check names are display names.** The `context` values are the `name:` of the CI jobs, not
-  their ids. Rename a job in `ci.yml` and the gate stops matching, silently.
+- **Signatures sit in the bypassed ruleset.** `back-merge.yml` merges from a runner with no
+  signing key, so a non-bypassable signature rule would break the pipeline. Here it holds for
+  everyone who is not an organisation admin.
+- **Replaced "Default Branch Security"** (UI-only, deleted 2026-09-17). It duplicated the
+  three rules above more loosely, and its `required_linear_history` was redundant with
+  squash-only merges, its `copilot_code_review` inert with zero Copilot seats.
