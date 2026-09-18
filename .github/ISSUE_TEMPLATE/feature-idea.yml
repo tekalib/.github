@@ -1,0 +1,44 @@
+name: Feature idea
+description: Propose une nouvelle fonctionnalité ou amélioration
+title: '[Feature]: '
+type: feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de détailler ton idée pour qu'elle soit facile à reprendre plus tard.
+
+        Priorité et effort se renseignent ensuite dans la barre latérale de l'issue (champs Priority et Effort).
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Quelle est l'idée ? Quel problème ça résout ou quelle valeur ça apporte ?
+      placeholder: Ex. Permettre d'exporter les rapports en PDF depuis le tableau de bord.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution envisagée
+      description: Comment tu imagines l'implémenter, s'il y a déjà une piste (optionnel).
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives envisagées
+      description: D'autres façons de résoudre le même besoin, si tu y as pensé (optionnel).
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexte additionnel
+      description: Liens, captures d'écran, discussions liées (optionnel).
+    validations:
+      required: false
