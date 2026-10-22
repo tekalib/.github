@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  CHECK_JSONSCHEMA: check-jsonschema==0.38.2
+
+jobs:
+  verify:
+    name: Verify (issue forms · Dependabot schema)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # Every repository of the organization inherits these forms: a broken one silently
+      # falls back to a blank issue everywhere.
+      - run: >-
+          find .github/ISSUE_TEMPLATE -name '*.yml' ! -name config.yml
+          -exec pipx run "$CHECK_JSONSCHEMA" --builtin-schema vendor.github-issue-forms {} +
+      - run: pipx run "$CHECK_JSONSCHEMA" --builtin-schema vendor.github-issue-config .github/ISSUE_TEMPLATE/config.yml
+      - run: pipx run "$CHECK_JSONSCHEMA" --builtin-schema vendor.dependabot .github/dependabot.yml
+
+  automerge:
+    needs: [verify]
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
+    uses: tekalib/.workflows/.github/workflows/dependabot-automerge.yml@1494e487e05e771c4103be2ba30ce1716dde519c # v1.1.0
+    permissions:
+      contents: read
+      pull-requests: read
+    secrets:
+      app-key: ${{ secrets.AUTOMATION_APP_KEY }}
+
+  release:
+    needs: [verify]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: tekalib/.workflows/.github/workflows/release.yml@1494e487e05e771c4103be2ba30ce1716dde519c # v1.1.0
+    permissions:
+      contents: write
+    with:
+      sha: ${{ github.sha }}
