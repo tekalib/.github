@@ -28,8 +28,19 @@ jobs:
       - run: pipx run "$CHECK_JSONSCHEMA" --builtin-schema vendor.github-issue-config .github/ISSUE_TEMPLATE/config.yml
       - run: pipx run "$CHECK_JSONSCHEMA" --builtin-schema vendor.dependabot .github/dependabot.yml
 
-  automerge:
+  # The one check the Trunk Merge Flow ruleset requires, same name in every repository: it needs
+  # every other job. always(), because a job skipped after a failed need reports success.
+  ci-passed:
+    name: CI passed
     needs: [verify]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1
+
+  automerge:
+    needs: [ci-passed]
     if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
     uses: tekalib/.workflows/.github/workflows/dependabot-automerge.yml@1494e487e05e771c4103be2ba30ce1716dde519c # v1.1.0
     permissions:
