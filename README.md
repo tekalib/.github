@@ -9,6 +9,8 @@ repository of the organization inherits.
   <a href="https://github.com/tekalib/.github/releases/latest"><img src="https://img.shields.io/github/v/release/tekalib/.github?sort=semver" alt="Latest release"></a>
 </p>
 
+---
+
 <p align="center">
   <img src="assets/banner.png" alt="Tekalib" width="100%" />
 </p>
