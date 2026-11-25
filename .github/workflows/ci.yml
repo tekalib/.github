@@ -14,13 +14,13 @@ env:
 
 jobs:
   verify:
-    name: Verify (issue forms · Dependabot schema)
+    name: Checks (issue forms · Dependabot config)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      # Every repository of the organization inherits these forms: a broken one silently
+      # Every repository of the owner inherits these forms: a broken one silently
       # falls back to a blank issue everywhere.
       - run: >-
           find .github/ISSUE_TEMPLATE -name '*.yml' ! -name config.yml
